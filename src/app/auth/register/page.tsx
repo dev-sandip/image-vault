@@ -35,20 +35,23 @@ export default function RegisterPage() {
   const name = `${formData.firstName} ${formData.lastName}`.trim();
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data, error } = await authClient.signUp.email(
+    await authClient.signUp.email(
       {
-        email: formData.email, // user email address
-        password: formData.confirmPassword, // user password -> min 8 characters by default
-        name, // user display name
-        // image, // User image URL (optional)
-        callbackURL: "/dashboard", // A URL to redirect to after the user verifies their email (optional)
+        email: formData.email,
+        password: formData.confirmPassword,
+        name,
+        callbackURL: "/dashboard",
       },
       {
-        onRequest: (ctx) => {
-          toast.loading("Creating your account...");
+        onRequest: () => {
+          toast.info("Creating your account...");
         },
         onSuccess: (ctx) => {
-          toast.success("Account created successfully!.");
+          toast.success(
+            `Welcome ${
+              ctx.data.user.name || "User"
+            }! Redirecting you to login page!.`
+          );
           redirect("/auth/login");
         },
         onError: (ctx) => {

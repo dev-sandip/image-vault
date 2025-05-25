@@ -26,22 +26,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  console.log(rememberMe);
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data, error } = await authClient.signIn.email(
+    await authClient.signIn.email(
       {
         email,
-
         password,
-
         callbackURL: "/dashboard",
-
         rememberMe,
       },
       {
+        onRequest() {
+          toast.info("Signing you in...");
+        },
         onSuccess: (ctx) => {
-          toast.success("Logged in successfully!.");
+          toast.success(`Welcome back ${ctx.data.user.name || "User"}!`);
           redirect("/");
         },
         onError: (ctx) => {
